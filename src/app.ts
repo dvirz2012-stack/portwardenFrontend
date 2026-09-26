@@ -23,10 +23,10 @@ const ws = new WebSocket(WS_URL);
 
     };
 
-    (window as any).killProcess = (pid: number) => {
-        console.log(`Sending kill command for Pid: ${pid}`);
-
-        ws.send(`KILL_PROCESS:${pid}`);
+    (window as any).killProcess = (port: number) => {
+        console.log(`Sending kill command for Port: ${port}`);
+        ws.send("KILL_PROCESS")
+        ws.send(String(port));
     };
 
     ws.onmessage = (event) => {
@@ -49,7 +49,7 @@ const ws = new WebSocket(WS_URL);
                                 <td>${portInfo.pid}</td>
                                 <td>${portInfo.processName}</td> 
                                 <td>${portInfo.port}</td>
-                                <td><button onclick="killProcess(${portInfo.pid})">Kill</button></td>
+                                <td><button onclick="killProcess(${portInfo.port})">Kill</button></td>
                             </tr>`
 
                         })

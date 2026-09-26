@@ -10,9 +10,10 @@ ws.onclose = (onclose) => {
 ws.onerror = (onerror) => {
     console.error("Websocket error.");
 };
-window.killProcess = (pid) => {
-    console.log(`Sending kill command for Pid: ${pid}`);
-    ws.send(`KILL_PROCESS:${pid}`);
+window.killProcess = (port) => {
+    console.log(`Sending kill command for Port: ${port}`);
+    ws.send("KILL_PROCESS");
+    ws.send(String(port));
 };
 ws.onmessage = (event) => {
     const response = JSON.parse(event.data);
@@ -27,7 +28,7 @@ ws.onmessage = (event) => {
                                 <td>${portInfo.pid}</td>
                                 <td>${portInfo.processName}</td> 
                                 <td>${portInfo.port}</td>
-                                <td><button onclick="killProcess(${portInfo.pid})">Kill</button></td>
+                                <td><button onclick="killProcess(${portInfo.port})">Kill</button></td>
                             </tr>`;
                     });
                 }
