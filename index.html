@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portwarden</title>
+    <style>
+        /* Figtree for the interface, a soft Fraunces for the page title */
+        @import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400..600&family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&display=swap");
+
+        :root {
+            color-scheme: light;
+
+            --paper: #f5f4fa;          /* page: off-white with a hint of lavender */
+            --surface: #ffffff;        /* table */
+            --surface-hover: #f6f5fd;  /* row hover */
+            --line: #e6e4f0;           /* borders (also the wizard's ground line) */
+            --ink: #2f2e41;            /* main text: unDraw's dark */
+            --ink-soft: #5d5b73;       /* secondary text */
+            --ink-faint: #726f89;      /* column headers */
+            --arcane: #6c63ff;         /* accent: unDraw's signature purple */
+            --ember: #cc353c;          /* buttons */
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            background: var(--paper);
+        }
+
+        body {
+            max-width: 60rem;
+            margin: 0 auto;
+            padding: clamp(1.5rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem);
+            font-family: "Figtree", "Segoe UI", system-ui, sans-serif;
+            line-height: 1.5;
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection {
+            background: rgb(108 99 255 / 0.22);
+        }
+
+        /* ---------- Hero: the wizard stands on the table's top edge ---------- */
+
+        .hero {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem 2rem;
+        }
+
+        .hero-text {
+            padding-bottom: 2.25rem;
+        }
+
+        .hero h1 {
+            margin: 0 0 0.625rem;
+            font-family: "Fraunces", Georgia, serif;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 600;
+            font-variation-settings: "SOFT" 100;
+            line-height: 1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 48ch;
+            color: var(--ink-soft);
+            text-wrap: pretty;
+        }
+
+        .hero-art {
+            display: block;
+            flex: none;
+            width: min(100%, 26rem);
+            height: auto;
+            margin-bottom: -1px; /* lets the ground line merge with the table border */
+        }
+
+        /* ---------- Table ---------- */
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            font-size: 0.9375rem;
+        }
+
+        th,
+        td {
+            padding: 0.875rem 1.125rem;
+            text-align: left;
+            border-bottom: 1px solid var(--line);
+        }
+
+        th {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--ink-faint);
+        }
+
+        td {
+            color: var(--ink-soft);
+            font-variant-numeric: tabular-nums;
+        }
+
+        td:first-child {
+            color: var(--ink);
+            font-weight: 500;
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        tr:hover td {
+            background: var(--surface-hover);
+        }
+
+        tr:hover td:first-child {
+            box-shadow: inset 2px 0 0 var(--arcane);
+        }
+
+        /* The cell holding the button hugs its content and sits on the right */
+        td:has(> button) {
+            width: 1%;
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        /* ---------- Buttons ---------- */
+
+        button {
+            padding: 0.5rem 0.875rem;
+            font: inherit;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            line-height: 1;
+            color: var(--ember);
+            background: rgb(204 53 60 / 0.07);
+            border: 1px solid rgb(204 53 60 / 0.24);
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background-color 0.15s ease, border-color 0.15s ease,
+            color 0.15s ease, transform 0.1s ease;
+        }
+
+        button:hover {
+            color: #fff;
+            background: var(--ember);
+            border-color: var(--ember);
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        button:focus-visible {
+            outline: 2px solid var(--arcane);
+            outline-offset: 2px;
+        }
+
+        /* ---------- Small screens & reduced motion ---------- */
+
+        @media (max-width: 40rem) {
+            .hero {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-text {
+                padding-bottom: 0;
+            }
+
+            .hero-art {
+                align-self: flex-end;
+                width: min(100%, 20rem);
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            th,
+            td {
+                padding: 0.75rem 0.625rem;
+            }
+
+            th:first-child,
+            td:first-child {
+                padding-left: 0.875rem;
+            }
+
+            th:last-child,
+            td:last-child {
+                padding-right: 0.875rem;
+            }
+
+            button {
+                padding: 0.5rem 0.75rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            button {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="hero">
+    <div class="hero-text">
+        <h1>PortWarden</h1>
+        <p>Hi, this is PortWarden, a cool site that lets you kill Processes and
+        see PIDs, Ports and Process Names, made for the developers that want to
+        write code, not Commands! :)</p>
+    </div>
+    <svg class="hero-art" xmlns="http://www.w3.org/2000/svg" width="520" height="309" viewBox="0 24 520 309" aria-hidden="true" focusable="false">
+        <style>
+            .wz-lift { transform-box: fill-box; transform-origin: center; animation: wz-lift 1s cubic-bezier(.3,.7,.2,1) .3s both; }
+            .wz-float { animation: wz-float 6s ease-in-out 1.3s infinite; }
+            .wz-appear { animation: wz-appear .6s ease-out .8s both; }
+            @keyframes wz-lift { from { transform: translate(20px, 0) rotate(4deg); } }
+            @keyframes wz-float { 50% { transform: translateY(-4px); } }
+            @keyframes wz-appear { from { opacity: 0; } }
+            @media (prefers-reduced-motion: reduce) {
+                .wz-lift, .wz-float, .wz-appear { animation: none; }
+            }
+        </style>
+        <defs>
+            <clipPath id="wz-robe-clip">
+                <path d="M157 182Q170 178 183 182Q197 186 199 200C206 240 214 288 223 322Q170 330 117 322C126 288 134 240 141 200Q143 186 157 182Z"/>
+            </clipPath>
+            <clipPath id="wz-hat-clip">
+                <path d="M149 147L191 147L178 104Q174 88 198 76Q168 80 163 100Z"/>
+            </clipPath>
+        </defs>
+
+        <!-- backdrop -->
+        <path d="M96 332C92 214 176 118 292 112C404 106 486 196 480 332Z" fill="#6c63ff" opacity=".055"/>
+
+        <!-- night sky -->
+        <path d="M452 44A18 18 0 1 0 452 80A9 18 0 1 1 452 44Z" fill="#d9d6f3"/>
+        <g fill="#6c63ff" opacity=".4">
+            <circle cx="58" cy="72" r="1.6"/>
+            <circle cx="112" cy="40" r="1.3" opacity=".7"/>
+            <circle cx="214" cy="34" r="1.4" opacity=".6"/>
+            <circle cx="336" cy="52" r="1.6"/>
+            <circle cx="398" cy="96" r="1.2" opacity=".6"/>
+            <circle cx="496" cy="126" r="1.5" opacity=".8"/>
+            <circle cx="34" cy="190" r="1.2" opacity=".5"/>
+        </g>
+
+        <!-- ground -->
+        <path d="M24 332H496" stroke="#e6e4f0" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- book stack -->
+        <rect x="42" y="314" width="72" height="18" rx="3" fill="#3f3d56"/>
+        <rect x="100" y="314" width="5" height="18" fill="#fff" opacity=".12"/>
+        <rect x="50" y="298" width="60" height="16" rx="3" fill="#6c63ff"/>
+        <rect x="57" y="298" width="5" height="16" fill="#fff" opacity=".3"/>
+        <rect x="46" y="284" width="64" height="14" rx="3" fill="#d9d8e6"/>
+        <rect x="95" y="284" width="5" height="14" fill="#6c63ff"/>
+
+        <!-- potion -->
+        <rect x="74" y="248" width="9" height="14" fill="#3f3d56"/>
+        <rect x="72.5" y="244" width="12" height="6" rx="2" fill="#a0616a"/>
+        <circle cx="78.5" cy="271" r="13" fill="#3f3d56"/>
+        <path d="M65.5 271A13 13 0 0 0 91.5 271Z" fill="#a39dff"/>
+        <circle cx="73.5" cy="265.5" r="2.5" fill="#fff" opacity=".5"/>
+
+        <!-- staff -->
+        <path d="M241 114V332" stroke="#a0616a" stroke-width="5" stroke-linecap="round"/>
+        <path d="M231 109Q241 122 251 109" fill="none" stroke="#a0616a" stroke-width="4" stroke-linecap="round"/>
+
+        <!-- shoes -->
+        <path d="M138 332C138 324 146 320 156 321C164 322 167 327 167 332Z" fill="#3f3d56"/>
+        <path d="M173 332C173 327 176 322 184 321C194 320 202 324 202 332Z" fill="#3f3d56"/>
+
+        <!-- robe -->
+        <path d="M157 182Q170 178 183 182Q197 186 199 200C206 240 214 288 223 322Q170 330 117 322C126 288 134 240 141 200Q143 186 157 182Z" fill="#6c63ff"/>
+        <g clip-path="url(#wz-robe-clip)">
+            <rect x="110" y="250" width="120" height="8" fill="#3f3d56"/>
+        </g>
+
+        <!-- sleeves + hands -->
+        <circle cx="137" cy="270" r="7" fill="#ffb8b8"/>
+        <path d="M146 192C134 204 128 236 124 264Q137 271 150 264C150 240 152 214 154 200Z" fill="#574fe0"/>
+        <path d="M190 190Q214 190 234 205Q238 219 232 232Q211 228 196 214Z" fill="#574fe0"/>
+        <circle cx="240" cy="214" r="7.5" fill="#ffb8b8"/>
+
+        <!-- head + beard -->
+        <circle cx="170" cy="160" r="15" fill="#ffb8b8"/>
+        <path d="M154 150C150 178 156 218 170 246C184 218 190 178 186 150L183 150C182 163 177 168 170 168C163 168 158 163 157 150Z" fill="#e6e6e6"/>
+        <path d="M160 167Q165 162 170 166Q175 162 180 167Q175 170.5 170 168.5Q165 170.5 160 167Z" fill="#cfcfd9"/>
+
+        <!-- hat -->
+        <ellipse cx="170" cy="148" rx="31" ry="6.5" fill="#574fe0"/>
+        <path d="M149 147L191 147L178 104Q174 88 198 76Q168 80 163 100Z" fill="#6c63ff"/>
+        <rect x="140" y="134" width="60" height="6" fill="#3f3d56" clip-path="url(#wz-hat-clip)"/>
+
+        <!-- orb -->
+        <circle cx="241" cy="99" r="28" fill="#6c63ff" opacity=".14"/>
+        <circle cx="241" cy="99" r="19" fill="#6c63ff" opacity=".24"/>
+        <circle cx="241" cy="99" r="10" fill="#6c63ff"/>
+        <circle cx="237.5" cy="95.5" r="3" fill="#fff" opacity=".85"/>
+
+        <!-- list cards -->
+        <rect x="306" y="120" width="150" height="44" rx="9" fill="#ffffff" stroke="#e6e4f0"/>
+        <circle cx="328" cy="142" r="10" fill="#e6e4f0"/>
+        <rect x="346" y="133" width="64" height="7" rx="3.5" fill="#e6e4f0"/>
+        <rect x="346" y="146" width="40" height="6" rx="3" fill="#efeef6"/>
+        <rect x="420" y="135" width="24" height="14" rx="7" fill="#efeef6"/>
+
+        <rect x="306" y="252" width="150" height="44" rx="9" fill="#ffffff" stroke="#e6e4f0"/>
+        <circle cx="328" cy="274" r="10" fill="#e6e4f0"/>
+        <rect x="346" y="265" width="54" height="7" rx="3.5" fill="#e6e4f0"/>
+        <rect x="346" y="278" width="34" height="6" rx="3" fill="#efeef6"/>
+        <rect x="420" y="267" width="24" height="14" rx="7" fill="#efeef6"/>
+
+        <!-- the lifted card -->
+        <g class="wz-lift">
+            <g class="wz-float">
+                <g transform="rotate(-4 364 207)">
+                    <rect x="286" y="184" width="156" height="46" rx="9" fill="#ffffff" stroke="#6c63ff" stroke-opacity=".7"/>
+                    <circle cx="309" cy="207" r="10" fill="#6c63ff"/>
+                    <rect x="327" y="198" width="70" height="7" rx="3.5" fill="#d9d6ea"/>
+                    <rect x="327" y="211" width="44" height="6" rx="3" fill="#e6e4f0"/>
+                    <circle cx="422" cy="207" r="10" fill="#6c63ff"/>
+                    <path d="M417.5 207.5l3 3l6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+            </g>
+        </g>
+
+        <!-- magic trail + sparkles -->
+        <g class="wz-appear">
+            <path d="M256 94C292 80 304 132 290 176" fill="none" stroke="#a39dff" stroke-width="3" stroke-linecap="round" stroke-dasharray="0.5 7.5"/>
+            <path d="M272 64Q272 72 280 72Q272 72 272 80Q272 72 264 72Q272 72 272 64Z" fill="#6c63ff"/>
+            <path d="M214 83Q214 88 219 88Q214 88 214 93Q214 88 209 88Q214 88 214 83Z" fill="#a39dff"/>
+            <path d="M462 176Q462 182 468 182Q462 182 462 188Q462 182 456 182Q462 182 462 176Z" fill="#a39dff"/>
+            <path d="M272 236Q272 240 276 240Q272 240 272 244Q272 240 268 240Q272 240 272 236Z" fill="#6c63ff"/>
+        </g>
+    </svg>
+</header>
+
+<table>
+    <thead>
+    <!-- Optional column names: <tr><th>Port</th><th>…</th></tr> -->
+    </thead>
+    <tbody id="port-list"></tbody>
+</table>
+
+<script src="./src/app.js" type="module"></script>
+</body>
+</html>

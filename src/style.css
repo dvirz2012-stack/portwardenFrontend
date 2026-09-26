@@ -1,0 +1,214 @@
+/* Figtree for the interface, a soft Fraunces for the page title */
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400..600&family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&display=swap");
+
+:root {
+    color-scheme: dark;
+
+    --midnight: #15141f;     /* page */
+    --dusk: #1c1b29;         /* table surface */
+    --dusk-raised: #232236;  /* row hover */
+    --line: #2c2b3f;         /* borders (also the wizard's ground line) */
+    --starlight: #eeecf7;    /* main text */
+    --mist: #a7a4bf;         /* secondary text */
+    --haze: #8683a0;         /* column headers */
+    --arcane: #6c63ff;       /* accent: unDraw's signature purple */
+    --arcane-soft: #a39dff;  /* focus rings */
+    --ember: #ff7a7a;        /* delete text */
+    --ember-solid: #d63a41;  /* delete hover fill */
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    background: var(--midnight);
+}
+
+body {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem);
+    font-family: "Figtree", "Segoe UI", system-ui, sans-serif;
+    line-height: 1.5;
+    color: var(--starlight);
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+    background: rgb(108 99 255 / 0.4);
+}
+
+/* ---------- Hero: the wizard stands on the table's top edge ---------- */
+
+.hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+}
+
+.hero-text {
+    padding-bottom: 2.25rem;
+}
+
+.hero h1 {
+    margin: 0 0 0.625rem;
+    font-family: "Fraunces", Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 600;
+    font-variation-settings: "SOFT" 100;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.hero p {
+    margin: 0;
+    max-width: 48ch;
+    color: var(--mist);
+    text-wrap: pretty;
+}
+
+.hero-art {
+    display: block;
+    flex: none;
+    width: min(100%, 26rem);
+    height: auto;
+    margin-bottom: -1px; /* lets the ground line merge with the table border */
+}
+
+/* ---------- Table ---------- */
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--dusk);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 0.9375rem;
+}
+
+th,
+td {
+    padding: 0.875rem 1.125rem;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+}
+
+th {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--haze);
+}
+
+td {
+    color: var(--mist);
+    font-variant-numeric: tabular-nums;
+}
+
+td:first-child {
+    color: var(--starlight);
+    font-weight: 500;
+}
+
+tr:last-child td {
+    border-bottom: 0;
+}
+
+tr:hover td {
+    background: var(--dusk-raised);
+}
+
+tr:hover td:first-child {
+    box-shadow: inset 2px 0 0 var(--arcane);
+}
+
+/* The cell holding the button hugs its content and sits on the right */
+td:has(> button) {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+}
+
+/* ---------- Buttons ---------- */
+
+button {
+    padding: 0.5rem 0.875rem;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ember);
+    background: rgb(255 122 122 / 0.08);
+    border: 1px solid rgb(255 122 122 / 0.24);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, transform 0.1s ease;
+}
+
+button:hover {
+    color: #fff;
+    background: var(--ember-solid);
+    border-color: var(--ember-solid);
+}
+
+button:active {
+    transform: scale(0.96);
+}
+
+button:focus-visible {
+    outline: 2px solid var(--arcane-soft);
+    outline-offset: 2px;
+}
+
+/* ---------- Small screens & reduced motion ---------- */
+
+@media (max-width: 40rem) {
+    .hero {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-text {
+        padding-bottom: 0;
+    }
+
+    .hero-art {
+        align-self: flex-end;
+        width: min(100%, 20rem);
+    }
+
+    table {
+        font-size: 0.875rem;
+    }
+
+    th,
+    td {
+        padding: 0.75rem 0.625rem;
+    }
+
+    th:first-child,
+    td:first-child {
+        padding-left: 0.875rem;
+    }
+
+    th:last-child,
+    td:last-child {
+        padding-right: 0.875rem;
+    }
+
+    button {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    button {
+        transition: none;
+    }
+}
