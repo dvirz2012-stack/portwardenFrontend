@@ -12,10 +12,6 @@ details:**
 
 </div>
 
-> [!WARNING]
-> There's still no authentication, any website open in your browser can connect to the WebSocket URL, and send KILL_PROCESS, because browsers don't block cross-site WebSocket
-> connections and the Server doesn't check the origin header, I'm working on fixing this :)
-
 **The steps for running the application are written in the Backend repo!**
 
 **Backend repo link:**
