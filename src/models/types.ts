@@ -20,5 +20,6 @@ export interface PortInfo {
     pid: number;
     port: number;
     processName: string;
+    icon?: string;
 
 }

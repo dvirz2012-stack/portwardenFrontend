@@ -139,6 +139,20 @@
             text-align: right;
         }
 
+        /* ---------- Process icons ---------- */
+
+        .process-icon {
+            display: block;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* The icon's cell hugs the icon and sits snug against the process name */
+        td:has(> .process-icon) {
+            width: 1%;
+            padding-right: 0;
+        }
+
         /* ---------- Buttons ---------- */
 
         button {
@@ -169,6 +183,94 @@
         button:focus-visible {
             outline: 2px solid var(--arcane);
             outline-offset: 2px;
+        }
+
+        /* ---------- Kill confirmation ---------- */
+
+        .confirm {
+            width: min(100% - 2rem, 24rem);
+            padding: 1.5rem;
+            color: var(--ink);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            box-shadow: 0 24px 48px -12px rgb(47 46 65 / 0.25);
+        }
+
+        .confirm[open] {
+            animation: confirm-in 0.18s ease-out;
+        }
+
+        .confirm::backdrop {
+            background: rgb(47 46 65 / 0.35);
+            backdrop-filter: blur(2px);
+        }
+
+        .confirm[open]::backdrop {
+            animation: confirm-fade 0.18s ease-out;
+        }
+
+        .confirm h2 {
+            margin: 0 0 0.5rem;
+            font-family: "Fraunces", Georgia, serif;
+            font-size: 1.625rem;
+            font-weight: 600;
+            font-variation-settings: "SOFT" 100;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+        }
+
+        .confirm p {
+            margin: 0 0 1.5rem;
+            color: var(--ink-soft);
+            text-wrap: pretty;
+        }
+
+        .confirm strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .confirm-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .confirm .cancel {
+            color: var(--ink-soft);
+            background: transparent;
+            border-color: var(--line);
+        }
+
+        .confirm .cancel:hover {
+            color: var(--ink);
+            background: var(--surface-hover);
+            border-color: var(--line);
+        }
+
+        .confirm .danger {
+            color: #fff;
+            background: var(--ember);
+            border-color: var(--ember);
+        }
+
+        .confirm .danger:hover {
+            background: #b02e34;
+            border-color: #b02e34;
+        }
+
+        @keyframes confirm-in {
+            from {
+                opacity: 0;
+                transform: translateY(6px) scale(0.98);
+            }
+        }
+
+        @keyframes confirm-fade {
+            from {
+                opacity: 0;
+            }
         }
 
         /* ---------- Small screens & reduced motion ---------- */
@@ -215,6 +317,11 @@
         @media (prefers-reduced-motion: reduce) {
             button {
                 transition: none;
+            }
+
+            .confirm[open],
+            .confirm[open]::backdrop {
+                animation: none;
             }
         }
     </style>
@@ -361,6 +468,17 @@
     </thead>
     <tbody id="port-list"></tbody>
 </table>
+
+<dialog id="confirm-kill" class="confirm" aria-labelledby="confirm-kill-title">
+    <form method="dialog">
+        <h2 id="confirm-kill-title">Are you sure?</h2>
+        <p>This will kill <strong id="confirm-kill-name"></strong> on port <strong id="confirm-kill-port"></strong>.</p>
+        <div class="confirm-actions">
+            <button value="cancel" class="cancel" autofocus>Cancel</button>
+            <button value="kill" class="danger">Kill</button>
+        </div>
+    </form>
+</dialog>
 
 <script src="./src/app.js" type="module"></script>
 </body>

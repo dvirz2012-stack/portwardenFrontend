@@ -4,6 +4,13 @@ import { WS_URL } from "./config.js";
 
 const ws = new WebSocket(WS_URL);
 
+const confirmDialog = document.getElementById("confirm-kill") as HTMLDialogElement;
+const confirmName = document.getElementById("confirm-kill-name") as HTMLElement;
+const confirmPort = document.getElementById("confirm-kill-port") as HTMLElement;
+
+let currentPorts: PortInfo[] = [];
+let pendingPort: number | null = null;
+
     ws.onopen = (onopen) => {
 
         console.log("Connected.")
@@ -24,10 +31,28 @@ const ws = new WebSocket(WS_URL);
     };
 
     (window as any).killProcess = (port: number) => {
-        console.log(`Sending kill command for Port: ${port}`);
-        ws.send("KILL_PROCESS")
-        ws.send(String(port));
+
+        pendingPort = port;
+        confirmName.textContent = currentPorts.find(p => p.port === port)?.processName ?? "the process";
+        confirmPort.textContent = String(port);
+        confirmDialog.returnValue = "";
+        confirmDialog.showModal();
+
     };
+
+    confirmDialog.addEventListener("close", () => {
+
+        if (confirmDialog.returnValue === "kill" && pendingPort !== null) {
+
+            console.log(`Sending kill command for Port: ${pendingPort}`);
+            ws.send("KILL_PROCESS");
+            ws.send(String(pendingPort));
+
+        }
+
+        pendingPort = null;
+
+    });
 
     ws.onmessage = (event) => {
 
@@ -38,6 +63,8 @@ const ws = new WebSocket(WS_URL);
             case "SUCCESS": {
                 if (response.message == "Ports fetched successfully") {
 
+                    currentPorts = response.data;
+
                     const table = document.getElementById("port-list");
 
                     if (table != null){
@@ -47,7 +74,8 @@ const ws = new WebSocket(WS_URL);
 
                             table.innerHTML += `<tr>
                                 <td>${portInfo.pid}</td>
-                                <td>${portInfo.processName}</td> 
+                                <td>${portInfo.icon ? `<img class="process-icon" src="${portInfo.icon}" alt = "">` : ""}</td>
+                                <td>${portInfo.processName}</td>  
                                 <td>${portInfo.port}</td>
                                 <td><button onclick="killProcess(${portInfo.port})">Kill</button></td>
                             </tr>`
