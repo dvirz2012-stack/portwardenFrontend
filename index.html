@@ -60,6 +60,7 @@
         }
 
         .hero h1 {
+            display: inline-block;
             margin: 0 0 0.625rem;
             font-family: "Fraunces", Georgia, serif;
             font-size: clamp(2.5rem, 6vw, 3.5rem);
@@ -67,6 +68,20 @@
             font-variation-settings: "SOFT" 100;
             line-height: 1;
             letter-spacing: -0.02em;
+        }
+
+        .h1-port {
+            color: #1c1b29;
+        }
+
+        .h1-warden {
+            color: #6c63ff;
+        }
+
+
+
+        .no-wrap {
+            white-space: nowrap;
         }
 
         .hero p {
@@ -329,7 +344,10 @@
 <body>
 <header class="hero">
     <div class="hero-text">
-        <h1>PortWarden</h1>
+        <div class="no-wrap">
+            <h1 class = "h1-port">Port</h1>
+            <h1 class = "h1-warden">Warden</h1>
+        </div>
         <p>Hi, this is PortWarden, a cool site that lets you kill Processes and
         see PIDs, Ports and Process Names, made for the developers that want to
         write code, not Commands! :)</p>
